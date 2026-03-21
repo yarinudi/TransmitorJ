@@ -285,3 +285,135 @@ Optional extra data (not required in this implementation, but useful in advanced
 - Survival mode is the default and should be preferred when censoring is present.
 - `matplotlib` is only required when plotting is enabled; use `--no-plot` for metrics-only runs.
 - NRI currently uses `reclassification.calculate_nri` and is unweighted (sample/IPCW weights are not applied).
+
+---
+
+# Performance Comparison Table
+
+Companion script for producing a consolidated model-comparison table alongside the DCA pipeline.
+
+- Script: `analysis/dca/run_perf_table.py`
+- Entry point: `main()`
+
+Uses the same input data and CLI conventions as `run_dca.py`.
+
+## What It Does
+
+Computes four families of metrics for each prediction model and writes them as a single comparison table:
+
+| Metric | Description |
+|---|---|
+| **C-td (Uno)** | IPCW-weighted concordance at the prediction horizon; all subjects contribute |
+| **Calibration** | Intercept (ideal 0), slope (ideal 1), and Brier score via logistic recalibration |
+| **PPV / NPV** | IPCW-weighted positive and negative predictive values at user-specified thresholds |
+| **NRI** | Net Reclassification Improvement versus a reference model (optional) |
+
+Calibration reuses `CalibrationAnalyzer` from `run_dca.py`. Uno's C-td and PPV/NPV are implemented locally with the same KM censoring estimator.
+
+## CLI Arguments
+
+Required (same as `run_dca.py`):
+
+- `--data-path` path to CSV/Parquet
+- `--model` model risk spec (repeatable): `"Label:column"` or `"column"`
+
+Survival mode (default):
+
+- `--time-col`, `--event-col`, `--horizon`
+- `--event-value` (default: `1`)
+
+Binary mode:
+
+- `--mode binary`
+- `--outcome-col`
+
+Performance-table specific:
+
+- `--ppv-npv-thresholds` comma-separated thresholds for PPV/NPV (default: `0.05,0.10,0.15`)
+- `--calibration-bins` number of bins (default: `10`)
+- `--calibration-strategy` `equal_width` or `quantile`
+- `--nri` enable NRI
+- `--nri-reference` reference model label (default: first `--model`)
+- `--nri-cutoffs` comma-separated cutoffs (default: `0` = continuous)
+- `--bootstrap` number of bootstrap iterations for 95% CIs (default: `0` = off)
+- `--seed` random seed (default: `42`)
+- `--latex` emit a LaTeX table alongside CSV
+- `--latex-caption`, `--latex-label` customise the LaTeX table
+- `--outdir` output directory (default: `analysis/dca/output_perf`)
+- `--clip-risk` clip risk values to `[0, 1]`
+
+## Command Presets
+
+### 1) Quick comparison (survival, 3-year horizon)
+
+```bash
+python analysis/dca/run_perf_table.py \
+  --data-path data/dca_input.csv \
+  --time-col time_years \
+  --event-col event_pd \
+  --horizon 3 \
+  --event-value 1 \
+  --model "Q:risk_q_3y" \
+  --model "Q+S:risk_qs_3y" \
+  --model "Q+S+A:risk_qsa_3y" \
+  --ppv-npv-thresholds 0.05,0.10,0.15 \
+  --outdir analysis/dca/output_perf_3y
+```
+
+### 2) Publication table (with NRI, bootstrap CIs, LaTeX)
+
+```bash
+python analysis/dca/run_perf_table.py \
+  --data-path data/dca_input.csv \
+  --time-col time_years \
+  --event-col event_pd \
+  --horizon 5 \
+  --event-value 1 \
+  --model "Q:risk_q_5y" \
+  --model "Q+S:risk_qs_5y" \
+  --model "Q+S+A:risk_qsa_5y" \
+  --ppv-npv-thresholds 0.05,0.10,0.15 \
+  --nri \
+  --nri-reference "Q" \
+  --nri-cutoffs 0 \
+  --bootstrap 1000 \
+  --seed 42 \
+  --latex \
+  --latex-caption "Model discrimination, calibration, and reclassification (5-year)" \
+  --latex-label "tab:perf_5y" \
+  --outdir analysis/dca/output_perf_5y
+```
+
+### 3) Binary mode
+
+```bash
+python analysis/dca/run_perf_table.py \
+  --mode binary \
+  --data-path data/dca_input.csv \
+  --outcome-col y_true_horizon \
+  --event-value 1 \
+  --model "risk_q" \
+  --model "risk_qs" \
+  --ppv-npv-thresholds 0.05,0.10,0.15,0.20 \
+  --outdir analysis/dca/output_perf_binary
+```
+
+## Outputs
+
+- `performance_table.csv` — wide format, one row per model
+- `classification_by_threshold.csv` — long format with PPV, NPV, sensitivity, specificity per (model, threshold)
+- `performance_summary.json` — full results including per-model metrics and optional bootstrap CIs
+- `performance_table.tex` — LaTeX `tabular` (only when `--latex` is set)
+
+## Relationship to `run_dca.py`
+
+| Concern | `run_dca.py` | `run_perf_table.py` |
+|---|---|---|
+| Clinical utility curves | Yes (DCA net benefit) | No |
+| Calibration diagnostics | Yes (metrics + plot) | Yes (metrics only, reuses `CalibrationAnalyzer`) |
+| Discrimination (C-td) | No | Yes (Uno's C-statistic) |
+| PPV / NPV | No | Yes (IPCW-weighted, at multiple thresholds) |
+| NRI | Yes (in DCA summary) | Yes (in performance table) |
+| Output format | Curves + JSON | Flat comparison table (CSV / LaTeX) |
+
+Both scripts accept the same input data and `--model` spec format, so they can be run back-to-back on the same dataset.
