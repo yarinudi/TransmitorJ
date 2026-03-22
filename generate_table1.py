@@ -588,3 +588,78 @@ def main():
 
 if __name__ == "__main__":
     main()
+    # generate_table1(X_feats, paper="both", save=True, out_dir='/home/yarinod/PythonProjects/python_modules/TransmitorJ/data_for_papers')
+
+    # ##### Generated outcome timestamps using this code:
+    # def load_target_events():
+    #     fpath = '/home/yarinod/PythonProjects/WHS/MWD/resources/data/whs/whs_accel_fract050924_fid.csv'
+    #     df = pd.read_csv(fpath).set_index('newid')
+        
+    #     # first fall after the acce wear
+    #     cols_fractpyr = [col for col in df.columns if 'fractp' in col]
+    #     df['first_fall_post'] = df[df[cols_fractpyr] > 0][cols_fractpyr].min(axis=1)
+    #     df['first_fall_post_label'] = (~df['first_fall_post'].isna()).astype(int)
+    #     df['first_fall_post'] = df['first_fall_post'].fillna(df['randyears'])
+
+    #     # define events of interest
+    #     cols_events = [
+    #         # K = 11
+    #         'randyears', 
+    #         # 'depressyrs', 
+    #         # 'Fibromyalgiayrs',
+    #         'jointyrs', 
+    #         # 'MSyrs', 
+    #         'Osteoarthritisyrs', 
+    #         'parkyrs', 
+    #         # 'Rheumayrs', 
+    #         'strokeyears', 
+    #         'tiayrs', 
+    #         'first_fall_post',
+    #     ]
+
+    #     cols_labels = [
+    #         'death',
+    #         # 'depression',
+    #         # 'Fibromyalgia',
+    #         'jointreplace',
+    #         # 'Multiple_sclerosis',
+    #         'Osteoarthritis',
+    #         'parkinson',
+    #         # 'Rheuma_arthritis',
+    #         'stkconf',
+    #         'tiaunr',
+    #         'first_fall_post_label'
+    #     ]
+
+    #     def format_events(events, labels):
+    #         temp_events = {}
+
+    #         for i, (e, t) in enumerate(events.items()):
+    #             label = labels.iloc[i] if t > 0 else 0
+    #             t_censored = events['randyears']
+    #             t = t_censored if label == 0 else t
+    #             temp_events[f'{e}_time'] = t
+    #             temp_events[f'{e}_label'] = label
+
+    #         return temp_events
+
+    #     targets = {}
+    #     for idx, events in df.iterrows():
+    #         targets[idx] = format_events(events[cols_events], events[cols_labels])
+
+    #     targets = pd.DataFrame.from_dict(targets, orient='index')
+    #     return targets
+
+    # targets = load_target_events()
+    # events = ['randyears','jointyrs', 'Osteoarthritisyrs', 'parkyrs', 'strokeyears', 'tiayrs', 'first_fall_post']
+    # cols = targets.columns
+
+    # for e in events:
+    #     print('='*70)
+    #     print(e)
+    #     print('='*70)
+    #     col_time = "_".join([e, 'time'])
+    #     col_label = "_".join([e, 'label'])
+    #     temp_target = targets.loc[:, [col_time, col_label]]
+    #     print(temp_target.groupby(col_label).describe().round(2))
+        
