@@ -317,7 +317,7 @@ def table1_npj_dm(
         dest = Path(out_dir) if out_dir is not None else OUT_DIR_DM
         dest.mkdir(parents=True, exist_ok=True)
         t1.to_csv(dest / "table1_cohort.csv")
-        t1.to_excel(dest / "table1_cohort.xlsx")
+        # t1.to_excel(dest / "table1_cohort.xlsx")
         t1.to_latex(dest / "table1_cohort.tex")
         event_panel.to_csv(dest / "table1_events.csv", index=False)
         event_panel.to_latex(dest / "table1_events.tex", index=False)
@@ -401,7 +401,7 @@ def table1_npj_pd(
         dest = Path(out_dir) if out_dir is not None else OUT_DIR_PD
         dest.mkdir(parents=True, exist_ok=True)
         t1.to_csv(dest / "table1_pd_stratified.csv")
-        t1.to_excel(dest / "table1_pd_stratified.xlsx")
+        # t1.to_excel(dest / "table1_pd_stratified.xlsx")
         t1.to_latex(dest / "table1_pd_stratified.tex")
         print(f"Saved to {dest}")
 
