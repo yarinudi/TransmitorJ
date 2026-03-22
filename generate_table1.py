@@ -19,7 +19,7 @@ Programmatic usage (notebook / script):
   # Or generate one at a time, optionally saving to disk
   from analysis.table1.generate_table1 import table1_npj_dm, table1_npj_pd
   t1 = table1_npj_dm(df)                          # no files saved
-  t1 = table1_npj_pd(df, out_dir=Path("output"))  # saves csv/xlsx/tex
+  t1 = table1_npj_pd(df, out_dir=Path("output"))  # saves csv/tex
 """
 from __future__ import annotations
 
@@ -341,7 +341,7 @@ def table1_npj_dm(
         Directory for output files.  Defaults to the npj-digital-medicine
         submission folder when *save* is True and *out_dir* is None.
     save : bool
-        If True, write csv / xlsx / tex files.  Set False when calling
+        If True, write csv / tex files.  Set False when calling
         from a notebook and you only want the returned objects.
 
     Returns
@@ -383,7 +383,6 @@ def table1_npj_dm(
         dest = Path(out_dir) if out_dir is not None else OUT_DIR_DM
         dest.mkdir(parents=True, exist_ok=True)
         t1.to_csv(dest / "table1_cohort.csv")
-        t1.to_excel(dest / "table1_cohort.xlsx")
         t1.to_latex(dest / "table1_cohort.tex")
         event_panel.to_csv(dest / "table1_events.csv", index=False)
         event_panel.to_latex(dest / "table1_events.tex", index=False)
@@ -418,7 +417,7 @@ def table1_npj_pd(
         Directory for output files.  Defaults to the npj-parkinsons-disease
         submission folder when *save* is True and *out_dir* is None.
     save : bool
-        If True, write csv / xlsx / tex files.  Set False when calling
+        If True, write csv / tex files.  Set False when calling
         from a notebook and you only want the returned object.
 
     Returns
@@ -471,7 +470,6 @@ def table1_npj_pd(
         dest = Path(out_dir) if out_dir is not None else OUT_DIR_PD
         dest.mkdir(parents=True, exist_ok=True)
         t1.to_csv(dest / "table1_pd_stratified.csv")
-        t1.to_excel(dest / "table1_pd_stratified.xlsx")
         t1.to_latex(dest / "table1_pd_stratified.tex")
         print(f"Saved to {dest}")
 
@@ -507,7 +505,7 @@ def generate_table1(
     out_dir : Path or str, optional
         Override the output directory for saved files.
     save : bool
-        If True, write csv / xlsx / tex outputs.
+        If True, write csv / tex outputs.
     remap_labels : bool
         If True, map coded integers (RACE, EDUC, smoke, alcuse, genhealth)
         to human-readable labels before building the table.
