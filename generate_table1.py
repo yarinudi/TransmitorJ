@@ -6,14 +6,26 @@ Generate Table 1 (descriptive statistics) for two manuscripts:
 Requires: tableone, pandas, pathlib
 Install:  pip install tableone
 
-Usage:
+CLI usage:
   python generate_table1.py --data <path_to_cohort_csv_or_parquet>
   python generate_table1.py --data cohort.csv --sway sway_features.csv
+
+Programmatic usage (notebook / script):
+  from analysis.table1.generate_table1 import generate_table1
+
+  # Returns dict of {"dm": TableOne, "pd": TableOne}
+  results = generate_table1(df, paper="both")
+
+  # Or generate one at a time, optionally saving to disk
+  from analysis.table1.generate_table1 import table1_npj_dm, table1_npj_pd
+  t1 = table1_npj_dm(df)                          # no files saved
+  t1 = table1_npj_pd(df, out_dir=Path("output"))  # saves csv/xlsx/tex
 """
 from __future__ import annotations
 
 import argparse
 from pathlib import Path
+from typing import Literal
 
 import pandas as pd
 from tableone import TableOne
@@ -118,18 +130,18 @@ TIME_COLS = {
 # Sway-derived features to include in npj PD Table 1
 # (top GAM predictors from the Q+S model — adjust if your CSV names differ)
 SWAY_TOP_FEATURES = [
-    "Area_stds",
-    "RMS_stds",
-    "RangeA_stds",
-    "CentroidFreq_p5",
-    "PWR_stds",
-    "MedianDist_p99",
+    # "Area_stds",
+    # "RMS_stds",
+    # "RangeA_stds",
+    # "CentroidFreq_p5",
+    # "PWR_stds",
+    # "MedianDist_p99",
 ]
 
 # Step-rate features (classified as Q in the manuscripts)
 STEP_RATE = [
-    "mean_spm",       # Mean steps-per-minute
-    "mean_std_spm",   # SD of steps-per-minute
+    # "mean_spm",       # Mean steps-per-minute
+    # "mean_std_spm",   # SD of steps-per-minute
 ]
 
 # ── Readable labels ───────────────────────────────────────────────────────────
@@ -248,7 +260,29 @@ def build_event_panel(df: pd.DataFrame) -> pd.DataFrame:
 # ═════════════════════════════════════════════════════════════════════════════
 # TABLE 1 — npj Digital Medicine (overall cohort, no stratification)
 # ═════════════════════════════════════════════════════════════════════════════
-def table1_npj_dm(df: pd.DataFrame, out_dir: Path) -> TableOne:
+def table1_npj_dm(
+    df: pd.DataFrame,
+    out_dir: Path | str | None = None,
+    save: bool = True,
+) -> tuple[TableOne, pd.DataFrame]:
+    """Generate Table 1 for npj Digital Medicine (overall cohort).
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Cohort dataframe (already label-mapped or raw — both work).
+    out_dir : Path or str, optional
+        Directory for output files.  Defaults to the npj-digital-medicine
+        submission folder when *save* is True and *out_dir* is None.
+    save : bool
+        If True, write csv / xlsx / tex files.  Set False when calling
+        from a notebook and you only want the returned objects.
+
+    Returns
+    -------
+    (TableOne, pd.DataFrame)
+        The descriptive-statistics table and the outcome event panel.
+    """
     columns = available(df, (
         DEMO_CONTINUOUS + DEMO_CATEGORICAL + HEALTH_HISTORY
         + ["SF12_modact", "SF12_pain", "SF12_energy", "SF12_felt_down",
@@ -277,14 +311,17 @@ def table1_npj_dm(df: pd.DataFrame, out_dir: Path) -> TableOne:
         label_suffix=False,
     )
 
-    out_dir.mkdir(parents=True, exist_ok=True)
-    t1.to_csv(out_dir / "table1_cohort.csv")
-    t1.to_excel(out_dir / "table1_cohort.xlsx")
-    t1.to_latex(out_dir / "table1_cohort.tex")
-
     event_panel = build_event_panel(df)
-    event_panel.to_csv(out_dir / "table1_events.csv", index=False)
-    event_panel.to_latex(out_dir / "table1_events.tex", index=False)
+
+    if save:
+        dest = Path(out_dir) if out_dir is not None else OUT_DIR_DM
+        dest.mkdir(parents=True, exist_ok=True)
+        t1.to_csv(dest / "table1_cohort.csv")
+        t1.to_excel(dest / "table1_cohort.xlsx")
+        t1.to_latex(dest / "table1_cohort.tex")
+        event_panel.to_csv(dest / "table1_events.csv", index=False)
+        event_panel.to_latex(dest / "table1_events.tex", index=False)
+        print(f"Saved to {dest}")
 
     print(f"\n{'='*72}")
     print("npj Digital Medicine — Table 1 (overall cohort)")
@@ -292,15 +329,35 @@ def table1_npj_dm(df: pd.DataFrame, out_dir: Path) -> TableOne:
     print(t1.tabulate(tablefmt="grid"))
     print("\nOutcome event counts:")
     print(event_panel.to_string(index=False))
-    print(f"\nSaved to {out_dir}")
 
-    return t1
+    return t1, event_panel
 
 
 # ═════════════════════════════════════════════════════════════════════════════
 # TABLE 1 — npj Parkinson's Disease (stratified by incident PD)
 # ═════════════════════════════════════════════════════════════════════════════
-def table1_npj_pd(df: pd.DataFrame, out_dir: Path) -> TableOne:
+def table1_npj_pd(
+    df: pd.DataFrame,
+    out_dir: Path | str | None = None,
+    save: bool = True,
+) -> TableOne:
+    """Generate Table 1 for npj Parkinson's Disease (stratified by PD).
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Cohort dataframe.  Must contain a ``parkinson`` column (0/1).
+    out_dir : Path or str, optional
+        Directory for output files.  Defaults to the npj-parkinsons-disease
+        submission folder when *save* is True and *out_dir* is None.
+    save : bool
+        If True, write csv / xlsx / tex files.  Set False when calling
+        from a notebook and you only want the returned object.
+
+    Returns
+    -------
+    TableOne
+    """
     strat_col = "parkinson"
     if strat_col not in df.columns:
         raise KeyError(f"Column '{strat_col}' not found. Available: {list(df.columns[:20])}...")
@@ -308,7 +365,6 @@ def table1_npj_pd(df: pd.DataFrame, out_dir: Path) -> TableOne:
     df = df.copy()
     df["PD status"] = df[strat_col].map({0: "No PD", 1: "Incident PD"})
 
-    # SF-12 items most relevant to PD narrative
     sf12_pd = [
         "SF12_modact", "SF12_cut_time", "SF12_felt_down", "SF12_energy",
         "SF12_soc_act", "SF12_phys_accless", "SF12_emot_accless",
@@ -341,22 +397,87 @@ def table1_npj_pd(df: pd.DataFrame, out_dir: Path) -> TableOne:
         label_suffix=False,
     )
 
-    out_dir.mkdir(parents=True, exist_ok=True)
-    t1.to_csv(out_dir / "table1_pd_stratified.csv")
-    t1.to_excel(out_dir / "table1_pd_stratified.xlsx")
-    t1.to_latex(out_dir / "table1_pd_stratified.tex")
+    if save:
+        dest = Path(out_dir) if out_dir is not None else OUT_DIR_PD
+        dest.mkdir(parents=True, exist_ok=True)
+        t1.to_csv(dest / "table1_pd_stratified.csv")
+        t1.to_excel(dest / "table1_pd_stratified.xlsx")
+        t1.to_latex(dest / "table1_pd_stratified.tex")
+        print(f"Saved to {dest}")
 
     print(f"\n{'='*72}")
     print("npj Parkinson's Disease — Table 1 (stratified by PD status)")
     print(f"{'='*72}")
     print(t1.tabulate(tablefmt="grid"))
-    print(f"\nSaved to {out_dir}")
 
     return t1
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# Main
+# Convenience wrapper for programmatic use
+# ═════════════════════════════════════════════════════════════════════════════
+def generate_table1(
+    df: pd.DataFrame,
+    paper: Literal["dm", "pd", "both"] = "both",
+    *,
+    out_dir: Path | str | None = None,
+    save: bool = False,
+    remap_labels: bool = True,
+) -> dict[str, TableOne | tuple[TableOne, pd.DataFrame]]:
+    """One-call entry point for generating Table 1 from a loaded DataFrame.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        The cohort dataframe (WHS columns, optionally with sway features
+        already merged in).
+    paper : {"dm", "pd", "both"}
+        Which table(s) to generate.
+    out_dir : Path or str, optional
+        Override the output directory for saved files.
+    save : bool
+        If True, write csv / xlsx / tex outputs.
+    remap_labels : bool
+        If True, map coded integers (RACE, EDUC, smoke, alcuse, genhealth)
+        to human-readable labels before building the table.
+
+    Returns
+    -------
+    dict
+        Keys are ``"dm"`` and/or ``"pd"``.
+        - ``"dm"`` value is ``(TableOne, event_panel_DataFrame)``
+        - ``"pd"`` value is ``TableOne``
+
+    Examples
+    --------
+    >>> import pandas as pd
+    >>> from analysis.table1.generate_table1 import generate_table1
+    >>> df = pd.read_csv("my_cohort.csv")
+    >>> results = generate_table1(df, paper="both")
+    >>> results["dm"][0]   # TableOne for npj Digital Medicine
+    >>> results["pd"]      # TableOne for npj Parkinson's Disease
+
+    >>> # In a notebook — just print, don't save files
+    >>> t1_pd = generate_table1(df, paper="pd", save=False)["pd"]
+    >>> print(t1_pd.tabulate(tablefmt="fancy_grid"))
+    """
+    df = df.copy()
+    if remap_labels:
+        df = apply_labels(df)
+
+    results: dict[str, TableOne | tuple[TableOne, pd.DataFrame]] = {}
+
+    if paper in ("dm", "both"):
+        results["dm"] = table1_npj_dm(df, out_dir=out_dir, save=save)
+
+    if paper in ("pd", "both"):
+        results["pd"] = table1_npj_pd(df, out_dir=out_dir, save=save)
+
+    return results
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# CLI entry point
 # ═════════════════════════════════════════════════════════════════════════════
 def main():
     parser = argparse.ArgumentParser(
@@ -382,13 +503,7 @@ def main():
         df = df.merge(sway, on=merge_key, how="left")
         print(f"  → After merge: {len(df):,} rows, {len(df.columns)} columns")
 
-    df = apply_labels(df)
-
-    if args.paper in ("dm", "both"):
-        table1_npj_dm(df, OUT_DIR_DM)
-
-    if args.paper in ("pd", "both"):
-        table1_npj_pd(df, OUT_DIR_PD)
+    generate_table1(df, paper=args.paper, save=True)
 
 
 if __name__ == "__main__":
