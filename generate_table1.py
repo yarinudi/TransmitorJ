@@ -27,6 +27,7 @@ import argparse
 from pathlib import Path
 from typing import Literal
 
+import numpy as np
 import pandas as pd
 from tableone import TableOne
 
@@ -99,32 +100,47 @@ SITTING = [
     "sithome",      # Sitting at home
 ]
 
-# Outcome event indicators (binary 1=yes, 0=no)
-OUTCOMES = {
-    "death":               "Mortality",
-    "jointreplace":        "Joint replacement",
-    "Osteoarthritis":      "Osteoarthritis",
-    "parkinson":           "Parkinson's disease",
-    "stkconf":             "Stroke (confirmed)",
-    "tiaunr":              "TIA (unrefuted)",
-    "Rheuma_arthritis":    "Rheumatoid arthritis",
-    "Fibromyalgia":        "Fibromyalgia",
-    "Multiple_sclerosis":  "Multiple sclerosis",
-    "depression":          "Depression",
+# ── Outcome definitions (7 outcomes matching both manuscripts) ────────────────
+# Raw columns: event indicator → time-to-event column
+OUTCOME_RAW = {
+    "death":           ("death",           "randyears"),
+    "jointreplace":    ("jointreplace",    "jointyrs"),
+    "Osteoarthritis":  ("Osteoarthritis",  "Osteoarthritisyrs"),
+    "parkinson":       ("parkinson",       "parkyrs"),
+    "stkconf":         ("stkconf",         "strokeyears"),
+    "tiaunr":          ("tiaunr",          "tiayrs"),
+    "first_fall_post": ("first_fall_post_label", "first_fall_post"),
 }
 
-# Time-to-event columns (person-years from accel wear)
-TIME_COLS = {
-    "death":            "randyears",
-    "jointreplace":     "jointyrs",
-    "Osteoarthritis":   "Osteoarthritisyrs",
-    "parkinson":        "parkyrs",
-    "stkconf":          "strokeyears",
-    "tiaunr":           "tiayrs",
-    "Rheuma_arthritis": "Rheumayrs",
-    "Fibromyalgia":     "Fibromyalgiayrs",
-    "Multiple_sclerosis": "MSyrs",
-    "depression":       "depressyrs",
+# Derived incident column names (created by derive_incident_events)
+INCIDENT_EVENT = {
+    "death":           "incident_death",
+    "jointreplace":    "incident_jointreplace",
+    "Osteoarthritis":  "incident_Osteoarthritis",
+    "parkinson":       "incident_parkinson",
+    "stkconf":         "incident_stkconf",
+    "tiaunr":          "incident_tiaunr",
+    "first_fall_post": "incident_first_fall_post",
+}
+
+INCIDENT_TIME = {
+    "death":           "time_death",
+    "jointreplace":    "time_jointreplace",
+    "Osteoarthritis":  "time_Osteoarthritis",
+    "parkinson":       "time_parkinson",
+    "stkconf":         "time_stkconf",
+    "tiaunr":          "time_tiaunr",
+    "first_fall_post": "time_first_fall_post",
+}
+
+OUTCOME_LABELS = {
+    "death":           "Mortality",
+    "jointreplace":    "Joint replacement",
+    "Osteoarthritis":  "Osteoarthritis",
+    "parkinson":       "Parkinson's disease",
+    "stkconf":         "Stroke (confirmed)",
+    "tiaunr":          "TIA (unrefuted)",
+    "first_fall_post": "Hip fracture",
 }
 
 # Sway-derived features to include in npj PD Table 1
@@ -193,7 +209,7 @@ LABELS = {
     "PWR_stds":           "Spectral power (SD across bouts)",
     "MedianDist_p99":     "Median distance (99th pctl.)",
     "randyears":          "Follow-up, years",
-    "parkyrs":            "Follow-up, years",
+    "follow_up_years":    "Follow-up, years",
 }
 
 RACE_MAP = {1: "White", 2: "Black", 3: "Hispanic", 4: "Asian/Pacific Islander",
@@ -217,6 +233,57 @@ def load_data(path: Path) -> pd.DataFrame:
     raise ValueError(f"Unsupported format: {suffix}")
 
 
+def derive_incident_events(df: pd.DataFrame) -> pd.DataFrame:
+    """Derive incident event indicators and proper follow-up times.
+
+    Mirrors the ``load_target_events`` / ``format_events`` logic from the
+    analysis pipeline:
+
+    1. Derive ``first_fall_post`` (time to first osteoporotic fracture after
+       accel wear) and ``first_fall_post_label`` from the ``fractpyr*`` columns.
+    2. For each of the 7 outcomes, create:
+       - ``incident_<outcome>`` : 1 if the raw event occurred *after* accel
+         deployment (time > 0), else 0.
+       - ``time_<outcome>`` : time-to-event for incident cases; censoring
+         time (``randyears``) for non-events / prevalent cases.
+    3. ``follow_up_years`` : overall follow-up (``randyears``), safe to use
+       in both Table 1 variants.
+    """
+    df = df.copy()
+
+    # ── 1. Derive first_fall_post from fractpyr columns ──────────────────
+    cols_fractpyr = sorted(c for c in df.columns if c.startswith("fractpyr"))
+    if cols_fractpyr:
+        positive_fract = df[cols_fractpyr].where(df[cols_fractpyr] > 0)
+        df["first_fall_post"] = positive_fract.min(axis=1)
+        df["first_fall_post_label"] = (~df["first_fall_post"].isna()).astype(int)
+        df["first_fall_post"] = df["first_fall_post"].fillna(df["randyears"])
+    else:
+        df["first_fall_post"] = df.get("randyears", np.nan)
+        df["first_fall_post_label"] = 0
+
+    # ── 2. Create incident indicators and proper time columns ────────────
+    censor_time = df["randyears"]
+
+    for key, (event_col, time_col) in OUTCOME_RAW.items():
+        if event_col not in df.columns or time_col not in df.columns:
+            continue
+
+        raw_label = df[event_col]
+        raw_time = df[time_col]
+
+        incident = ((raw_label > 0) & (raw_time > 0)).astype(int)
+        time = np.where(incident == 1, raw_time, censor_time)
+
+        df[INCIDENT_EVENT[key]] = incident
+        df[INCIDENT_TIME[key]] = time
+
+    # ── 3. Overall follow-up ─────────────────────────────────────────────
+    df["follow_up_years"] = censor_time
+
+    return df
+
+
 def apply_labels(df: pd.DataFrame) -> pd.DataFrame:
     """Map coded values to readable category labels."""
     col_maps = {
@@ -238,22 +305,21 @@ def available(df: pd.DataFrame, cols: list[str]) -> list[str]:
 
 
 def build_event_panel(df: pd.DataFrame) -> pd.DataFrame:
-    """Build a small summary of outcome event counts."""
+    """Build a summary of incident outcome event counts."""
     rows = []
-    for col, label in OUTCOMES.items():
-        if col in df.columns:
-            n_events = int(df[col].sum())
-            pct = n_events / len(df) * 100
-            time_col = TIME_COLS.get(col)
-            if time_col and time_col in df.columns:
-                median_fu = df[time_col].median()
-                rows.append({"Outcome": label,
-                             "Events, n (%)": f"{n_events:,} ({pct:.1f}%)",
-                             "Median follow-up, years": f"{median_fu:.1f}"})
-            else:
-                rows.append({"Outcome": label,
-                             "Events, n (%)": f"{n_events:,} ({pct:.1f}%)",
-                             "Median follow-up, years": ""})
+    for key, label in OUTCOME_LABELS.items():
+        inc_col = INCIDENT_EVENT[key]
+        time_col = INCIDENT_TIME[key]
+        if inc_col not in df.columns:
+            continue
+        n_events = int(df[inc_col].sum())
+        pct = n_events / len(df) * 100
+        median_fu = df[time_col].median() if time_col in df.columns else None
+        rows.append({
+            "Outcome": label,
+            "Events, n (%)": f"{n_events:,} ({pct:.1f}%)",
+            "Median follow-up, years": f"{median_fu:.1f}" if median_fu is not None else "",
+        })
     return pd.DataFrame(rows)
 
 
@@ -288,7 +354,7 @@ def table1_npj_dm(
         + ["SF12_modact", "SF12_pain", "SF12_energy", "SF12_felt_down",
            "SF12_soc_act", "SF12_cut_time"]
         + STEP_RATE
-        + ["tmethrst", "walkpace", "randyears"]
+        + ["tmethrst", "walkpace", "follow_up_years"]
     ))
 
     categorical = available(df, DEMO_CATEGORICAL + HEALTH_HISTORY + [
@@ -296,7 +362,7 @@ def table1_npj_dm(
         "SF12_soc_act", "SF12_cut_time",
     ])
 
-    nonnormal = available(df, ["tmethrst", "randyears"])
+    nonnormal = available(df, ["tmethrst", "follow_up_years"])
 
     rename = {k: v for k, v in LABELS.items() if k in columns}
 
@@ -317,7 +383,7 @@ def table1_npj_dm(
         dest = Path(out_dir) if out_dir is not None else OUT_DIR_DM
         dest.mkdir(parents=True, exist_ok=True)
         t1.to_csv(dest / "table1_cohort.csv")
-        # t1.to_excel(dest / "table1_cohort.xlsx")
+        t1.to_excel(dest / "table1_cohort.xlsx")
         t1.to_latex(dest / "table1_cohort.tex")
         event_panel.to_csv(dest / "table1_events.csv", index=False)
         event_panel.to_latex(dest / "table1_events.tex", index=False)
@@ -346,7 +412,8 @@ def table1_npj_pd(
     Parameters
     ----------
     df : pd.DataFrame
-        Cohort dataframe.  Must contain a ``parkinson`` column (0/1).
+        Cohort dataframe.  Must contain an ``incident_parkinson`` column
+        (created by ``derive_incident_events``).
     out_dir : Path or str, optional
         Directory for output files.  Defaults to the npj-parkinsons-disease
         submission folder when *save* is True and *out_dir* is None.
@@ -358,9 +425,12 @@ def table1_npj_pd(
     -------
     TableOne
     """
-    strat_col = "parkinson"
+    strat_col = "incident_parkinson"
     if strat_col not in df.columns:
-        raise KeyError(f"Column '{strat_col}' not found. Available: {list(df.columns[:20])}...")
+        raise KeyError(
+            f"Column '{strat_col}' not found — run derive_incident_events() first. "
+            f"Available: {list(df.columns[:20])}..."
+        )
 
     df = df.copy()
     df["PD status"] = df[strat_col].map({0: "No PD", 1: "Incident PD"})
@@ -374,12 +444,12 @@ def table1_npj_pd(
     columns = available(df, (
         DEMO_CONTINUOUS + DEMO_CATEGORICAL + HEALTH_HISTORY
         + sf12_pd + STEP_RATE + SWAY_TOP_FEATURES
-        + ["tmethrst", "walkpace", "parkyrs"]
+        + ["tmethrst", "walkpace", "follow_up_years"]
     ))
 
     categorical = available(df, DEMO_CATEGORICAL + HEALTH_HISTORY + sf12_pd)
 
-    nonnormal = available(df, ["tmethrst", "parkyrs"] + SWAY_TOP_FEATURES)
+    nonnormal = available(df, ["tmethrst", "follow_up_years"] + SWAY_TOP_FEATURES)
 
     rename = {k: v for k, v in LABELS.items() if k in columns}
 
@@ -401,7 +471,7 @@ def table1_npj_pd(
         dest = Path(out_dir) if out_dir is not None else OUT_DIR_PD
         dest.mkdir(parents=True, exist_ok=True)
         t1.to_csv(dest / "table1_pd_stratified.csv")
-        # t1.to_excel(dest / "table1_pd_stratified.xlsx")
+        t1.to_excel(dest / "table1_pd_stratified.xlsx")
         t1.to_latex(dest / "table1_pd_stratified.tex")
         print(f"Saved to {dest}")
 
@@ -430,7 +500,8 @@ def generate_table1(
     ----------
     df : pd.DataFrame
         The cohort dataframe (WHS columns, optionally with sway features
-        already merged in).
+        already merged in).  If incident event columns are not yet present,
+        ``derive_incident_events`` is called automatically.
     paper : {"dm", "pd", "both"}
         Which table(s) to generate.
     out_dir : Path or str, optional
@@ -462,6 +533,10 @@ def generate_table1(
     >>> print(t1_pd.tabulate(tablefmt="fancy_grid"))
     """
     df = df.copy()
+
+    if "incident_parkinson" not in df.columns:
+        df = derive_incident_events(df)
+
     if remap_labels:
         df = apply_labels(df)
 
@@ -502,6 +577,13 @@ def main():
         merge_key = "newid" if "newid" in sway.columns else sway.columns[0]
         df = df.merge(sway, on=merge_key, how="left")
         print(f"  → After merge: {len(df):,} rows, {len(df.columns)} columns")
+
+    print("Deriving incident event indicators ...")
+    df = derive_incident_events(df)
+    for key, label in OUTCOME_LABELS.items():
+        inc_col = INCIDENT_EVENT[key]
+        if inc_col in df.columns:
+            print(f"  {label}: {int(df[inc_col].sum()):,} incident events")
 
     generate_table1(df, paper=args.paper, save=True)
 
