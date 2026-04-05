@@ -53,7 +53,7 @@
       }
     },
     "O+Q": {
-      "risk_column": "risks_3y_q",
+      "risk_column": "risks_3y_oq",
       "C_td": 0.9339114179326691,
       "calibration": {
         "calibration_intercept": 1.2976076637948275,
@@ -188,7 +188,7 @@
       }
     },
     "O+Q+S": {
-      "risk_column": "risks_3y_qs",
+      "risk_column": "risks_3y_oqs",
       "C_td": 0.9356442485401277,
       "calibration": {
         "calibration_intercept": 1.214658472794367,

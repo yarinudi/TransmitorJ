@@ -25,7 +25,7 @@
       "calibration_curve_file": "data/folds/outputs/parkyrs/output_5y/calibration_curve_O.csv"
     },
     "O+Q": {
-      "risk_column": "risks_5y_q",
+      "risk_column": "risks_5y_oq",
       "better_than_treat_all_and_none_threshold_intervals": [
         [
           0.005,
@@ -104,7 +104,7 @@
       "calibration_curve_file": "data/folds/outputs/parkyrs/output_5y/calibration_curve_O+S.csv"
     },
     "O+Q+S": {
-      "risk_column": "risks_5y_qs",
+      "risk_column": "risks_5y_oqs",
       "better_than_treat_all_and_none_threshold_intervals": [
         [
           0.005,

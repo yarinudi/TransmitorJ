@@ -1,0 +1,17 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption{Model discrimination, calibration, and reclassification - Osteoarthritis (7-year)}
+\label{tab:perf_osteoarthritis_7y}
+\begin{tabular}{lccccccccccccc}
+\toprule
+Model & C\_td & Cal\_Intercept & Cal\_Slope & Brier & PPV@5\% & NPV@5\% & PPV@10\% & NPV@10\% & PPV@15\% & NPV@15\% & PPV@20\% & NPV@20\% & NRI \\
+\midrule
+O & 0.602 & 5.976 & 3.046 & 0.048 & 0.063 & 0.961 & -- & 0.949 & -- & 0.949 & -- & 0.949 & ref \\
+O+Q & 0.570 & 1.827 & 1.625 & 0.048 & 0.058 & 0.959 & -- & 0.949 & -- & 0.949 & -- & 0.949 & -0.176 \\
+S & 0.535 & -3.087 & -0.054 & 0.048 & 0.055 & 0.954 & 0.000 & 0.949 & -- & 0.949 & -- & 0.949 & -0.112 \\
+O+S & 0.553 & -1.606 & 0.450 & 0.048 & 0.057 & 0.956 & 0.000 & 0.949 & -- & 0.949 & -- & 0.949 & -0.138 \\
+O+Q+S & 0.739 & 0.551 & 1.235 & 0.047 & 0.079 & 0.996 & 0.103 & 0.954 & 0.190 & 0.950 & 0.000 & 0.949 & 0.700 \\
+\bottomrule
+\end{tabular}
+\end{table}

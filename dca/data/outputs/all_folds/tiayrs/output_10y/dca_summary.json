@@ -29,7 +29,7 @@
       "calibration_curve_file": "data/folds/outputs/tiayrs/output_10y/calibration_curve_O.csv"
     },
     "O+Q": {
-      "risk_column": "risks_10y_q",
+      "risk_column": "risks_10y_oq",
       "better_than_treat_all_and_none_threshold_intervals": [
         [
           0.005,
@@ -108,7 +108,7 @@
       "calibration_curve_file": "data/folds/outputs/tiayrs/output_10y/calibration_curve_O+S.csv"
     },
     "O+Q+S": {
-      "risk_column": "risks_10y_qs",
+      "risk_column": "risks_10y_oqs",
       "better_than_treat_all_and_none_threshold_intervals": [
         [
           0.005,

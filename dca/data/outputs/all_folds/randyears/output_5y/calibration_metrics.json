@@ -23,7 +23,7 @@
     "brier_score": 0.03197550531155923,
     "fit_status": "full_intercept_and_slope"
   },
-  "O+O+Q+S": {
+  "O+Q+S": {
     "calibration_intercept": 0.36284328562881357,
     "calibration_slope": 1.11037280883701,
     "brier_score": 0.027200220596890583,

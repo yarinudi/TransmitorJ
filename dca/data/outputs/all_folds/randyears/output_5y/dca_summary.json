@@ -25,7 +25,7 @@
       "calibration_curve_file": "data/folds/outputs/randyears/output_5y/calibration_curve_O.csv"
     },
     "O+Q": {
-      "risk_column": "risks_5y_q",
+      "risk_column": "risks_5y_oq",
       "better_than_treat_all_and_none_threshold_intervals": [
         [
           0.02,
@@ -103,8 +103,8 @@
       },
       "calibration_curve_file": "data/folds/outputs/randyears/output_5y/calibration_curve_O+S.csv"
     },
-    "O+O+Q+S": {
-      "risk_column": "risks_5y_qs",
+    "O+Q+S": {
+      "risk_column": "risks_5y_oqs",
       "better_than_treat_all_and_none_threshold_intervals": [
         [
           0.02,
@@ -126,7 +126,7 @@
         "brier_score": 0.027200220596890583,
         "fit_status": "full_intercept_and_slope"
       },
-      "calibration_curve_file": "data/folds/outputs/randyears/output_5y/calibration_curve_O+O+Q+S.csv"
+      "calibration_curve_file": "data/folds/outputs/randyears/output_5y/calibration_curve_O+Q+S.csv"
     }
   },
   "time_column": "time_years",
