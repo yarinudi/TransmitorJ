@@ -1,144 +1,83 @@
 {
   "mode": "survival",
-  "n_rows_used": 15613,
-  "weighted_event_rate": 0.015742129058996496,
+  "n_rows_used": 15721,
+  "weighted_event_rate": 0.006828614814073244,
   "models": {
     "O": {
       "risk_column": "risks_3y_o",
-      "better_than_treat_all_and_none_threshold_intervals": [
-        [
-          0.02,
-          0.14
-        ],
-        [
-          0.18,
-          0.35
-        ]
-      ],
-      "max_net_benefit": 0.004655356065722725,
+      "better_than_treat_all_and_none_threshold_intervals": [],
+      "max_net_benefit": -0.0006852259491616264,
       "nri_vs_reference": {
         "reference_model": "O",
         "is_reference_model": true
       },
       "calibration": {
-        "calibration_intercept": -0.2542280366528946,
-        "calibration_slope": 0.9402477621434331,
-        "brier_score": 0.015162852242525062,
+        "calibration_intercept": -3.662994619927544,
+        "calibration_slope": 0.31848783985177426,
+        "brier_score": 0.008013497690453258,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/randyears/output_3y/calibration_curve_O.csv"
     },
-    "O+Q": {
-      "risk_column": "risks_3y_oq",
-      "better_than_treat_all_and_none_threshold_intervals": [
-        [
-          0.02,
-          0.35
-        ]
-      ],
-      "max_net_benefit": 0.010210698111433077,
-      "nri_vs_reference": {
-        "reference_model": "O",
-        "method": "reclassification.calculate_nri",
-        "weighting": "unweighted",
-        "cutoff_nri": {
-          "0.000000": 1.1999368162727095
-        }
-      },
-      "calibration": {
-        "calibration_intercept": 0.6537765701588207,
-        "calibration_slope": 1.2454272517411922,
-        "brier_score": 0.012580495475307974,
-        "fit_status": "full_intercept_and_slope"
-      },
-      "calibration_curve_file": "data/folds/outputs/randyears/output_3y/calibration_curve_O+Q.csv"
-    },
-    "S": {
-      "risk_column": "risks_3y_s",
-      "better_than_treat_all_and_none_threshold_intervals": [
-        [
-          0.02,
-          0.12
-        ],
-        [
-          0.17,
-          0.25
-        ]
-      ],
-      "max_net_benefit": 0.004583164840185563,
-      "nri_vs_reference": {
-        "reference_model": "O",
-        "method": "reclassification.calculate_nri",
-        "weighting": "unweighted",
-        "cutoff_nri": {
-          "0.000000": -0.050863917920166646
-        }
-      },
-      "calibration": {
-        "calibration_intercept": 0.26218872003130084,
-        "calibration_slope": 1.0771787135943458,
-        "brier_score": 0.015112079941894632,
-        "fit_status": "full_intercept_and_slope"
-      },
-      "calibration_curve_file": "data/folds/outputs/randyears/output_3y/calibration_curve_S.csv"
-    },
     "O+S": {
-      "risk_column": "risks_3y_os",
-      "better_than_treat_all_and_none_threshold_intervals": [
-        [
-          0.02,
-          0.22
-        ],
-        [
-          0.24,
-          0.27
-        ],
-        [
-          0.29,
-          0.3
-        ]
-      ],
-      "max_net_benefit": 0.005413417025837601,
+      "risk_column": "risks_3y_oq",
+      "better_than_treat_all_and_none_threshold_intervals": [],
+      "max_net_benefit": -0.0008168144515251162,
       "nri_vs_reference": {
         "reference_model": "O",
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": 0.3184698956501921
+          "0.000000": 0.3829475668799136
         }
       },
       "calibration": {
-        "calibration_intercept": -0.015193409923381338,
-        "calibration_slope": 1.0029867421544523,
-        "brier_score": 0.01496727091060263,
+        "calibration_intercept": -2.6300405730129404,
+        "calibration_slope": 0.5119815002164506,
+        "brier_score": 0.008029594015088728,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/randyears/output_3y/calibration_curve_O+S.csv"
     },
-    "O+Q+S": {
-      "risk_column": "risks_3y_oqs",
-      "better_than_treat_all_and_none_threshold_intervals": [
-        [
-          0.02,
-          0.35
-        ]
-      ],
-      "max_net_benefit": 0.010336375569806686,
+    "O+D": {
+      "risk_column": "risks_3y_os",
+      "better_than_treat_all_and_none_threshold_intervals": [],
+      "max_net_benefit": -3.2778124407947936e-05,
       "nri_vs_reference": {
         "reference_model": "O",
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": 1.2124285749169759
+          "0.000000": 0.08328299607369377
         }
       },
       "calibration": {
-        "calibration_intercept": 0.7080426150109972,
-        "calibration_slope": 1.2611606438570204,
-        "brier_score": 0.012625253689502803,
+        "calibration_intercept": -3.2795868136601207,
+        "calibration_slope": 0.39105827807176063,
+        "brier_score": 0.0073856462931391285,
         "fit_status": "full_intercept_and_slope"
       },
-      "calibration_curve_file": "data/folds/outputs/randyears/output_3y/calibration_curve_O+Q+S.csv"
+      "calibration_curve_file": "data/folds/outputs/randyears/output_3y/calibration_curve_O+D.csv"
+    },
+    "O+S+D": {
+      "risk_column": "risks_3y_oqs",
+      "better_than_treat_all_and_none_threshold_intervals": [],
+      "max_net_benefit": -0.0007322459170492719,
+      "nri_vs_reference": {
+        "reference_model": "O",
+        "method": "reclassification.calculate_nri",
+        "weighting": "unweighted",
+        "cutoff_nri": {
+          "0.000000": 0.37141575830793583
+        }
+      },
+      "calibration": {
+        "calibration_intercept": -2.508781219147576,
+        "calibration_slope": 0.5418119682780037,
+        "brier_score": 0.007815799648637317,
+        "fit_status": "full_intercept_and_slope"
+      },
+      "calibration_curve_file": "data/folds/outputs/randyears/output_3y/calibration_curve_O+S+D.csv"
     }
   },
   "time_column": "time_years",

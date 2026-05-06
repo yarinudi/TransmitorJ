@@ -1,132 +1,88 @@
 {
   "mode": "survival",
-  "n_rows_used": 16770,
-  "weighted_event_rate": 0.012945464197922477,
+  "n_rows_used": 16719,
+  "weighted_event_rate": 0.003021100471116217,
   "models": {
     "O": {
       "risk_column": "risks_1y_o",
-      "better_than_treat_all_and_none_threshold_intervals": [
-        [
-          0.02,
-          0.02
-        ]
-      ],
-      "max_net_benefit": 0.00032435352789567443,
+      "better_than_treat_all_and_none_threshold_intervals": [],
+      "max_net_benefit": 0.0,
       "nri_vs_reference": {
         "reference_model": "O",
         "is_reference_model": true
       },
       "calibration": {
-        "calibration_intercept": -0.1817834521783308,
-        "calibration_slope": 0.9364036943515165,
-        "brier_score": 0.012756958095680043,
+        "calibration_intercept": -4.979833892672792,
+        "calibration_slope": 0.17310563056356945,
+        "brier_score": 0.0031377922484087046,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/jointyrs/output_1y/calibration_curve_O.csv"
     },
-    "O+Q": {
-      "risk_column": "risks_1y_oq",
-      "better_than_treat_all_and_none_threshold_intervals": [
-        [
-          0.02,
-          0.03
-        ]
-      ],
-      "max_net_benefit": 0.001322534887633983,
-      "nri_vs_reference": {
-        "reference_model": "O",
-        "method": "reclassification.calculate_nri",
-        "weighting": "unweighted",
-        "cutoff_nri": {
-          "0.000000": 0.5175004945279142
-        }
-      },
-      "calibration": {
-        "calibration_intercept": 0.5731063313836994,
-        "calibration_slope": 1.113092264089006,
-        "brier_score": 0.01271106783308389,
-        "fit_status": "full_intercept_and_slope"
-      },
-      "calibration_curve_file": "data/folds/outputs/jointyrs/output_1y/calibration_curve_O+Q.csv"
-    },
-    "S": {
-      "risk_column": "risks_1y_s",
-      "better_than_treat_all_and_none_threshold_intervals": [
-        [
-          0.02,
-          0.02
-        ]
-      ],
-      "max_net_benefit": 7.583767687683611e-05,
-      "nri_vs_reference": {
-        "reference_model": "O",
-        "method": "reclassification.calculate_nri",
-        "weighting": "unweighted",
-        "cutoff_nri": {
-          "0.000000": 0.0034364517146255324
-        }
-      },
-      "calibration": {
-        "calibration_intercept": 3.0036453689246896,
-        "calibration_slope": 1.663597286129221,
-        "brier_score": 0.012753263815003977,
-        "fit_status": "full_intercept_and_slope"
-      },
-      "calibration_curve_file": "data/folds/outputs/jointyrs/output_1y/calibration_curve_S.csv"
-    },
     "O+S": {
-      "risk_column": "risks_1y_os",
-      "better_than_treat_all_and_none_threshold_intervals": [
-        [
-          0.02,
-          0.03
-        ]
-      ],
-      "max_net_benefit": 0.0007253250401658804,
+      "risk_column": "risks_1y_oq",
+      "better_than_treat_all_and_none_threshold_intervals": [],
+      "max_net_benefit": 0.0,
       "nri_vs_reference": {
         "reference_model": "O",
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": 0.2400666102201332
+          "0.000000": 0.3953119044594079
         }
       },
       "calibration": {
-        "calibration_intercept": 1.1764339840571894,
-        "calibration_slope": 1.2478766671329906,
-        "brier_score": 0.01274126065721971,
+        "calibration_intercept": -3.9730090976126218,
+        "calibration_slope": 0.39067326459834845,
+        "brier_score": 0.003163652067640624,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/jointyrs/output_1y/calibration_curve_O+S.csv"
     },
-    "O+Q+S": {
-      "risk_column": "risks_1y_oqs",
+    "O+D": {
+      "risk_column": "risks_1y_os",
       "better_than_treat_all_and_none_threshold_intervals": [
         [
-          0.02,
-          0.06
-        ],
-        [
-          0.09,
-          0.1
+          0.05,
+          0.05
         ]
       ],
-      "max_net_benefit": 0.003550959922921475,
+      "max_net_benefit": 4.0227281147100575e-05,
       "nri_vs_reference": {
         "reference_model": "O",
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": 0.8034510185619708
+          "0.000000": 0.29659509592173805
         }
       },
       "calibration": {
-        "calibration_intercept": 1.0106597564378073,
-        "calibration_slope": 1.2306235332613098,
-        "brier_score": 0.012573995845043583,
+        "calibration_intercept": -4.324825216587894,
+        "calibration_slope": 0.31843145964579367,
+        "brier_score": 0.0031259130221304512,
         "fit_status": "full_intercept_and_slope"
       },
-      "calibration_curve_file": "data/folds/outputs/jointyrs/output_1y/calibration_curve_O+Q+S.csv"
+      "calibration_curve_file": "data/folds/outputs/jointyrs/output_1y/calibration_curve_O+D.csv"
+    },
+    "O+S+D": {
+      "risk_column": "risks_1y_oqs",
+      "better_than_treat_all_and_none_threshold_intervals": [],
+      "max_net_benefit": 0.0,
+      "nri_vs_reference": {
+        "reference_model": "O",
+        "method": "reclassification.calculate_nri",
+        "weighting": "unweighted",
+        "cutoff_nri": {
+          "0.000000": 0.38497155521675913
+        }
+      },
+      "calibration": {
+        "calibration_intercept": -3.4007685995416708,
+        "calibration_slope": 0.5213380904015166,
+        "brier_score": 0.0031520251235060046,
+        "fit_status": "full_intercept_and_slope"
+      },
+      "calibration_curve_file": "data/folds/outputs/jointyrs/output_1y/calibration_curve_O+S+D.csv"
     }
   },
   "time_column": "time_years",

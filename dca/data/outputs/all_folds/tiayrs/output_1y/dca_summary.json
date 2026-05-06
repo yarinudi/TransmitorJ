@@ -1,7 +1,7 @@
 {
   "mode": "survival",
-  "n_rows_used": 16576,
-  "weighted_event_rate": 0.0014809167665096883,
+  "n_rows_used": 16678,
+  "weighted_event_rate": 0.0005917874448993585,
   "models": {
     "O": {
       "risk_column": "risks_1y_o",
@@ -12,14 +12,14 @@
         "is_reference_model": true
       },
       "calibration": {
-        "calibration_intercept": 0.5510748824685827,
-        "calibration_slope": 1.1701428548432016,
-        "brier_score": 0.0014786983825588527,
+        "calibration_intercept": -6.1845068173308775,
+        "calibration_slope": 0.21215194742809163,
+        "brier_score": 0.0006040588640375177,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/tiayrs/output_1y/calibration_curve_O.csv"
     },
-    "O+Q": {
+    "O+S": {
       "risk_column": "risks_1y_oq",
       "better_than_treat_all_and_none_threshold_intervals": [],
       "max_net_benefit": 0.0,
@@ -28,38 +28,18 @@
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": 0.2650667633375627
+          "0.000000": 0.2606431485481162
         }
       },
       "calibration": {
-        "calibration_intercept": 1.4037261947249666,
-        "calibration_slope": 1.3188805554199767,
-        "brier_score": 0.0014776795010793824,
+        "calibration_intercept": -5.889212347791739,
+        "calibration_slope": 0.25486003426214365,
+        "brier_score": 0.0005993041941296133,
         "fit_status": "full_intercept_and_slope"
       },
-      "calibration_curve_file": "data/folds/outputs/tiayrs/output_1y/calibration_curve_O+Q.csv"
+      "calibration_curve_file": "data/folds/outputs/tiayrs/output_1y/calibration_curve_O+S.csv"
     },
-    "S": {
-      "risk_column": "risks_1y_s",
-      "better_than_treat_all_and_none_threshold_intervals": [],
-      "max_net_benefit": 0.0,
-      "nri_vs_reference": {
-        "reference_model": "O",
-        "method": "reclassification.calculate_nri",
-        "weighting": "unweighted",
-        "cutoff_nri": {
-          "0.000000": -0.4395722312851188
-        }
-      },
-      "calibration": {
-        "calibration_intercept": -3.8938900662892593,
-        "calibration_slope": 0.42768338299824804,
-        "brier_score": 0.001479983718834886,
-        "fit_status": "full_intercept_and_slope"
-      },
-      "calibration_curve_file": "data/folds/outputs/tiayrs/output_1y/calibration_curve_S.csv"
-    },
-    "O+S": {
+    "O+D": {
       "risk_column": "risks_1y_os",
       "better_than_treat_all_and_none_threshold_intervals": [],
       "max_net_benefit": 0.0,
@@ -68,18 +48,18 @@
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": -0.0794538094374963
+          "0.000000": -0.05692344612431022
         }
       },
       "calibration": {
-        "calibration_intercept": -0.7565698483855067,
-        "calibration_slope": 0.9470452335288059,
-        "brier_score": 0.0014793270592994674,
+        "calibration_intercept": -6.502805398632101,
+        "calibration_slope": 0.15192089127373698,
+        "brier_score": 0.0005977030514383111,
         "fit_status": "full_intercept_and_slope"
       },
-      "calibration_curve_file": "data/folds/outputs/tiayrs/output_1y/calibration_curve_O+S.csv"
+      "calibration_curve_file": "data/folds/outputs/tiayrs/output_1y/calibration_curve_O+D.csv"
     },
-    "O+Q+S": {
+    "O+S+D": {
       "risk_column": "risks_1y_oqs",
       "better_than_treat_all_and_none_threshold_intervals": [],
       "max_net_benefit": 0.0,
@@ -88,16 +68,16 @@
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": 0.08150806597788662
+          "0.000000": 0.14451643868490532
         }
       },
       "calibration": {
-        "calibration_intercept": 0.3741423940670543,
-        "calibration_slope": 1.1400075978951494,
-        "brier_score": 0.0014786382699124151,
+        "calibration_intercept": -5.804814552312746,
+        "calibration_slope": 0.26438935961832133,
+        "brier_score": 0.0005971398144429686,
         "fit_status": "full_intercept_and_slope"
       },
-      "calibration_curve_file": "data/folds/outputs/tiayrs/output_1y/calibration_curve_O+Q+S.csv"
+      "calibration_curve_file": "data/folds/outputs/tiayrs/output_1y/calibration_curve_O+S+D.csv"
     }
   },
   "time_column": "time_years",
