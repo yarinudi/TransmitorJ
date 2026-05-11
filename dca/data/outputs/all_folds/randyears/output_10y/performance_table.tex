@@ -1,0 +1,16 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption{Model discrimination, calibration, and reclassification - Mortality (10-year)}
+\label{tab:perf_mortality_10y}
+\begin{tabular}{lccccccccccccc}
+\toprule
+Model & C\_td & Cal\_Intercept & Cal\_Slope & Brier & PPV@5\% & NPV@5\% & PPV@10\% & NPV@10\% & PPV@15\% & NPV@15\% & PPV@20\% & NPV@20\% & NRI \\
+\midrule
+O & 0.770 & 0.629 & 1.341 & 0.080 & 0.156 & 0.976 & 0.277 & 0.961 & 0.365 & 0.947 & 0.458 & 0.938 & ref \\
+O+S & 0.804 & 0.617 & 1.150 & 0.078 & 0.220 & 0.972 & 0.373 & 0.955 & 0.475 & 0.943 & 0.530 & 0.932 & 0.467 \\
+O+D & 0.773 & 1.135 & 1.427 & 0.082 & 0.184 & 0.971 & 0.341 & 0.954 & 0.443 & 0.941 & 0.541 & 0.931 & -0.108 \\
+O+S+D & 0.804 & 0.812 & 1.228 & 0.078 & 0.228 & 0.973 & 0.393 & 0.954 & 0.503 & 0.943 & 0.562 & 0.931 & 0.389 \\
+\bottomrule
+\end{tabular}
+\end{table}

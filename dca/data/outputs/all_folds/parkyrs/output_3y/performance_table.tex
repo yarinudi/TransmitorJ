@@ -1,0 +1,16 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption{Model discrimination, calibration, and reclassification - Parkinson's Disease (3-year)}
+\label{tab:perf_pd_3y}
+\begin{tabular}{lccccccccccccc}
+\toprule
+Model & C\_td & Cal\_Intercept & Cal\_Slope & Brier & PPV@0\% & NPV@0\% & PPV@1\% & NPV@1\% & PPV@2\% & NPV@2\% & PPV@5\% & NPV@5\% & NRI \\
+\midrule
+O & 0.549 & -2.571 & 0.512 & 0.004 & 0.008 & 0.996 & 0.000 & 0.996 & -- & 0.996 & -- & 0.996 & ref \\
+O+S & 0.659 & 2.897 & 1.456 & 0.004 & 0.011 & 0.997 & 0.059 & 0.996 & 1.000 & 0.996 & -- & 0.996 & 0.342 \\
+O+D & 0.738 & 0.619 & 1.064 & 0.004 & 0.013 & 0.998 & 0.025 & 0.997 & 0.019 & 0.996 & -- & 0.996 & 0.745 \\
+O+S+D & 0.766 & 1.274 & 1.186 & 0.004 & 0.015 & 0.998 & 0.025 & 0.997 & 0.025 & 0.996 & 0.000 & 0.996 & 0.846 \\
+\bottomrule
+\end{tabular}
+\end{table}
