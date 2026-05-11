@@ -1,40 +1,45 @@
 {
   "mode": "survival",
-  "n_rows_used": 14042,
-  "weighted_event_rate": 0.001483501111296197,
+  "n_rows_used": 14302,
+  "weighted_event_rate": 0.006038297226661669,
   "models": {
     "O": {
       "risk_column": "risks_5y_o",
       "better_than_treat_all_and_none_threshold_intervals": [],
-      "max_net_benefit": 0.0,
+      "max_net_benefit": 0.0009275521155245629,
       "nri_vs_reference": {
         "reference_model": "O",
         "is_reference_model": true
       },
       "calibration": {
-        "calibration_intercept": -2.445373611690369,
-        "calibration_slope": 0.7708201387623883,
-        "brier_score": 0.0014963434122652172,
+        "calibration_intercept": -2.4347056421260342,
+        "calibration_slope": 0.5045337904901239,
+        "brier_score": 0.006000962159844813,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/parkyrs/output_5y/calibration_curve_O.csv"
     },
     "O+S": {
       "risk_column": "risks_5y_oq",
-      "better_than_treat_all_and_none_threshold_intervals": [],
-      "max_net_benefit": 0.0,
+      "better_than_treat_all_and_none_threshold_intervals": [
+        [
+          0.005,
+          0.035
+        ]
+      ],
+      "max_net_benefit": 0.0018307451989641827,
       "nri_vs_reference": {
         "reference_model": "O",
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": 0.28044548237330075
+          "0.000000": 0.31618095640339766
         }
       },
       "calibration": {
-        "calibration_intercept": -1.504474752667414,
-        "calibration_slope": 0.9520220672236148,
-        "brier_score": 0.0014977385946477728,
+        "calibration_intercept": 1.7437839070596632,
+        "calibration_slope": 1.3082951565238377,
+        "brier_score": 0.0059913857010735075,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/parkyrs/output_5y/calibration_curve_O+S.csv"
@@ -43,23 +48,23 @@
       "risk_column": "risks_5y_os",
       "better_than_treat_all_and_none_threshold_intervals": [
         [
-          0.055,
-          0.09
+          0.005,
+          0.055
         ]
       ],
-      "max_net_benefit": 6.24182387078077e-05,
+      "max_net_benefit": 0.002786329017674142,
       "nri_vs_reference": {
         "reference_model": "O",
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": 0.08312941752962588
+          "0.000000": 0.8207066263081326
         }
       },
       "calibration": {
-        "calibration_intercept": -4.98964972648663,
-        "calibration_slope": 0.2765672456323978,
-        "brier_score": 0.0015124890361156045,
+        "calibration_intercept": 1.137519128538198,
+        "calibration_slope": 1.2056078268355148,
+        "brier_score": 0.005947568403168255,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/parkyrs/output_5y/calibration_curve_O+D.csv"
@@ -68,23 +73,23 @@
       "risk_column": "risks_5y_oqs",
       "better_than_treat_all_and_none_threshold_intervals": [
         [
-          0.055,
-          0.1
+          0.005,
+          0.075
         ]
       ],
-      "max_net_benefit": 5.62246784223026e-05,
+      "max_net_benefit": 0.0029213970903791808,
       "nri_vs_reference": {
         "reference_model": "O",
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": 0.16994327574068735
+          "0.000000": 0.88405133980947
         }
       },
       "calibration": {
-        "calibration_intercept": -4.391740813697751,
-        "calibration_slope": 0.3875470063865033,
-        "brier_score": 0.0015106599463812183,
+        "calibration_intercept": 1.5180476684931687,
+        "calibration_slope": 1.287527689542438,
+        "brier_score": 0.0059368469076815766,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/parkyrs/output_5y/calibration_curve_O+S+D.csv"

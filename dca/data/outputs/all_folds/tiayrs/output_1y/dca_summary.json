@@ -1,7 +1,7 @@
 {
   "mode": "survival",
-  "n_rows_used": 16678,
-  "weighted_event_rate": 0.0005917874448993585,
+  "n_rows_used": 16693,
+  "weighted_event_rate": 0.0014771423349639972,
   "models": {
     "O": {
       "risk_column": "risks_1y_o",
@@ -12,29 +12,34 @@
         "is_reference_model": true
       },
       "calibration": {
-        "calibration_intercept": -6.1845068173308775,
-        "calibration_slope": 0.21215194742809163,
-        "brier_score": 0.0006040588640375177,
+        "calibration_intercept": -0.8041462426699824,
+        "calibration_slope": 1.0021970841664014,
+        "brier_score": 0.0014799526950369803,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/tiayrs/output_1y/calibration_curve_O.csv"
     },
     "O+S": {
       "risk_column": "risks_1y_oq",
-      "better_than_treat_all_and_none_threshold_intervals": [],
-      "max_net_benefit": 0.0,
+      "better_than_treat_all_and_none_threshold_intervals": [
+        [
+          0.01,
+          0.01
+        ]
+      ],
+      "max_net_benefit": 1.2980185749094682e-05,
       "nri_vs_reference": {
         "reference_model": "O",
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": 0.2606431485481162
+          "0.000000": 0.3406431485481161
         }
       },
       "calibration": {
-        "calibration_intercept": -5.889212347791739,
-        "calibration_slope": 0.25486003426214365,
-        "brier_score": 0.0005993041941296133,
+        "calibration_intercept": 0.7410880403251667,
+        "calibration_slope": 1.241375939505905,
+        "brier_score": 0.001475599133873789,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/tiayrs/output_1y/calibration_curve_O+S.csv"
@@ -48,13 +53,13 @@
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": -0.05692344612431022
+          "0.000000": -0.21692344612431014
         }
       },
       "calibration": {
-        "calibration_intercept": -6.502805398632101,
-        "calibration_slope": 0.15192089127373698,
-        "brier_score": 0.0005977030514383111,
+        "calibration_intercept": -0.7593810403503967,
+        "calibration_slope": 0.9642458027469781,
+        "brier_score": 0.001476423385753017,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/tiayrs/output_1y/calibration_curve_O+D.csv"
@@ -68,13 +73,13 @@
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": 0.14451643868490532
+          "0.000000": -0.13548356131509465
         }
       },
       "calibration": {
-        "calibration_intercept": -5.804814552312746,
-        "calibration_slope": 0.26438935961832133,
-        "brier_score": 0.0005971398144429686,
+        "calibration_intercept": 0.0020778695213668572,
+        "calibration_slope": 1.0871958775401158,
+        "brier_score": 0.0014755870567049404,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/tiayrs/output_1y/calibration_curve_O+S+D.csv"

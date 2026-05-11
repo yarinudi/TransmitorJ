@@ -1,20 +1,25 @@
 {
   "mode": "survival",
-  "n_rows_used": 14433,
-  "weighted_event_rate": 0.014479096610295802,
+  "n_rows_used": 14757,
+  "weighted_event_rate": 0.03492415611138698,
   "models": {
     "O": {
       "risk_column": "risks_5y_o",
-      "better_than_treat_all_and_none_threshold_intervals": [],
-      "max_net_benefit": -0.0002923101147591176,
+      "better_than_treat_all_and_none_threshold_intervals": [
+        [
+          0.02,
+          0.27
+        ]
+      ],
+      "max_net_benefit": 0.018857357835818635,
       "nri_vs_reference": {
         "reference_model": "O",
         "is_reference_model": true
       },
       "calibration": {
-        "calibration_intercept": -2.7990329874427826,
-        "calibration_slope": 0.423519553429204,
-        "brier_score": 0.017682489228525257,
+        "calibration_intercept": -0.4905394570696045,
+        "calibration_slope": 0.9244357465545182,
+        "brier_score": 0.03203964310218696,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/randyears/output_5y/calibration_curve_O.csv"
@@ -24,22 +29,22 @@
       "better_than_treat_all_and_none_threshold_intervals": [
         [
           0.02,
-          0.02
+          0.35
         ]
       ],
-      "max_net_benefit": 0.001390106036177164,
+      "max_net_benefit": 0.02312489007713296,
       "nri_vs_reference": {
         "reference_model": "O",
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": 0.2632436130170228
+          "0.000000": 0.830766019214805
         }
       },
       "calibration": {
-        "calibration_intercept": -2.3175272471571677,
-        "calibration_slope": 0.49757120507837177,
-        "brier_score": 0.016638715666614984,
+        "calibration_intercept": 0.10682242178486562,
+        "calibration_slope": 1.044405439704158,
+        "brier_score": 0.026741853963769477,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/randyears/output_5y/calibration_curve_O+S.csv"
@@ -49,22 +54,26 @@
       "better_than_treat_all_and_none_threshold_intervals": [
         [
           0.02,
-          0.02
+          0.31
+        ],
+        [
+          0.33,
+          0.35
         ]
       ],
-      "max_net_benefit": 0.0001784262739806218,
+      "max_net_benefit": 0.01945460690342555,
       "nri_vs_reference": {
         "reference_model": "O",
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": 0.06564949599381298
+          "0.000000": 0.05399267659456286
         }
       },
       "calibration": {
-        "calibration_intercept": -2.4729450123133585,
-        "calibration_slope": 0.48810604940238556,
-        "brier_score": 0.01597489260378819,
+        "calibration_intercept": 0.02359440999937448,
+        "calibration_slope": 1.0113277570909884,
+        "brier_score": 0.03149230510804126,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/randyears/output_5y/calibration_curve_O+D.csv"
@@ -74,22 +83,22 @@
       "better_than_treat_all_and_none_threshold_intervals": [
         [
           0.02,
-          0.02
+          0.35
         ]
       ],
-      "max_net_benefit": 0.001416962316761609,
+      "max_net_benefit": 0.0227368831197198,
       "nri_vs_reference": {
         "reference_model": "O",
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": 0.25544148684461043
+          "0.000000": 0.7851152078324819
         }
       },
       "calibration": {
-        "calibration_intercept": -2.1989932826565566,
-        "calibration_slope": 0.5321453277211358,
-        "brier_score": 0.016239522636307777,
+        "calibration_intercept": 0.26952554933204165,
+        "calibration_slope": 1.0917500138198222,
+        "brier_score": 0.026782013253645976,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/randyears/output_5y/calibration_curve_O+S+D.csv"

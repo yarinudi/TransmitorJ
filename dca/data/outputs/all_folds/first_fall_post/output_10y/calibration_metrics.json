@@ -1,26 +1,26 @@
 {
   "O": {
-    "calibration_intercept": -1.4813913171368391,
-    "calibration_slope": 0.37701366050439994,
-    "brier_score": 0.06805133559889891,
+    "calibration_intercept": -0.024381658864801117,
+    "calibration_slope": 1.035523753180619,
+    "brier_score": 0.051315095746134284,
     "fit_status": "full_intercept_and_slope"
   },
   "O+S": {
-    "calibration_intercept": -1.6090700437635912,
-    "calibration_slope": 0.2977770008218667,
-    "brier_score": 0.06858073943682076,
+    "calibration_intercept": 0.8687309841772262,
+    "calibration_slope": 1.273081838698575,
+    "brier_score": 0.04835364971197856,
     "fit_status": "full_intercept_and_slope"
   },
   "O+D": {
-    "calibration_intercept": -1.0835134573981882,
-    "calibration_slope": 0.4877532649139924,
-    "brier_score": 0.06795246722850447,
+    "calibration_intercept": 0.6668739307156752,
+    "calibration_slope": 1.2073414778858014,
+    "brier_score": 0.05113692796166802,
     "fit_status": "full_intercept_and_slope"
   },
   "O+S+D": {
-    "calibration_intercept": -1.3037790655947965,
-    "calibration_slope": 0.38712474170922223,
-    "brier_score": 0.06845081374045203,
+    "calibration_intercept": 1.3386418509224831,
+    "calibration_slope": 1.3908997894414425,
+    "brier_score": 0.04858924352966837,
     "fit_status": "full_intercept_and_slope"
   }
 }

@@ -1,25 +1,25 @@
 {
   "mode": "survival",
-  "n_rows_used": 12913,
-  "weighted_event_rate": 0.026951624785827973,
+  "n_rows_used": 13458,
+  "weighted_event_rate": 0.06287191106541887,
   "models": {
     "O": {
       "risk_column": "risks_7y_o",
       "better_than_treat_all_and_none_threshold_intervals": [
         [
-          0.02,
-          0.03
+          0.03,
+          0.35
         ]
       ],
-      "max_net_benefit": 0.008165015732031267,
+      "max_net_benefit": 0.043505474879815306,
       "nri_vs_reference": {
         "reference_model": "O",
         "is_reference_model": true
       },
       "calibration": {
-        "calibration_intercept": -2.1638299112187056,
-        "calibration_slope": 0.5107158175240872,
-        "brier_score": 0.03146693148854762,
+        "calibration_intercept": -0.19502967581193342,
+        "calibration_slope": 1.0008944066325682,
+        "brier_score": 0.05245994589725767,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/randyears/output_7y/calibration_curve_O.csv"
@@ -29,22 +29,22 @@
       "better_than_treat_all_and_none_threshold_intervals": [
         [
           0.02,
-          0.05
+          0.35
         ]
       ],
-      "max_net_benefit": 0.009105710633034537,
+      "max_net_benefit": 0.04665104834273263,
       "nri_vs_reference": {
         "reference_model": "O",
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": 0.18618868100720243
+          "0.000000": 0.6117316331910441
         }
       },
       "calibration": {
-        "calibration_intercept": -1.8991182465260323,
-        "calibration_slope": 0.5211460351376107,
-        "brier_score": 0.02888395907740331,
+        "calibration_intercept": 0.15708230929783196,
+        "calibration_slope": 1.019555361067812,
+        "brier_score": 0.04608508185377252,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/randyears/output_7y/calibration_curve_O+S.csv"
@@ -54,22 +54,22 @@
       "better_than_treat_all_and_none_threshold_intervals": [
         [
           0.02,
-          0.03
+          0.35
         ]
       ],
-      "max_net_benefit": 0.00810225979189044,
+      "max_net_benefit": 0.04425256943017425,
       "nri_vs_reference": {
         "reference_model": "O",
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": 0.0009438799948155996
+          "0.000000": 0.030828310463243858
         }
       },
       "calibration": {
-        "calibration_intercept": -1.8915689679349923,
-        "calibration_slope": 0.5615806354851722,
-        "brier_score": 0.02876118488393745,
+        "calibration_intercept": 0.30270091368704555,
+        "calibration_slope": 1.0917649097573483,
+        "brier_score": 0.052193595204095104,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/randyears/output_7y/calibration_curve_O+D.csv"
@@ -79,22 +79,22 @@
       "better_than_treat_all_and_none_threshold_intervals": [
         [
           0.02,
-          0.04
+          0.35
         ]
       ],
-      "max_net_benefit": 0.009278500570281794,
+      "max_net_benefit": 0.046504644117718937,
       "nri_vs_reference": {
         "reference_model": "O",
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": 0.1532623632179022
+          "0.000000": 0.565526317396535
         }
       },
       "calibration": {
-        "calibration_intercept": -1.7878273748724036,
-        "calibration_slope": 0.5588814352648153,
-        "brier_score": 0.028403823848753805,
+        "calibration_intercept": 0.305415256526572,
+        "calibration_slope": 1.0719244059890158,
+        "brier_score": 0.045937391008617594,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/randyears/output_7y/calibration_curve_O+S+D.csv"

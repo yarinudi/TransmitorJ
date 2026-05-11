@@ -1,80 +1,100 @@
 {
   "mode": "survival",
-  "n_rows_used": 16691,
-  "weighted_event_rate": 0.0013643734505735992,
+  "n_rows_used": 16724,
+  "weighted_event_rate": 0.003313715201744615,
   "models": {
     "O": {
       "risk_column": "risks_1y_o",
-      "better_than_treat_all_and_none_threshold_intervals": [],
-      "max_net_benefit": 0.0,
+      "better_than_treat_all_and_none_threshold_intervals": [
+        [
+          0.03,
+          0.035
+        ]
+      ],
+      "max_net_benefit": 3.7830141151565976e-05,
       "nri_vs_reference": {
         "reference_model": "O",
         "is_reference_model": true
       },
       "calibration": {
-        "calibration_intercept": -2.758827876513381,
-        "calibration_slope": 0.7332143295421072,
-        "brier_score": 0.001389595545076003,
+        "calibration_intercept": -2.3795031587977524,
+        "calibration_slope": 0.6335862541001787,
+        "brier_score": 0.003311035537234077,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/first_fall_post/output_1y/calibration_curve_O.csv"
     },
     "O+S": {
       "risk_column": "risks_1y_oq",
-      "better_than_treat_all_and_none_threshold_intervals": [],
-      "max_net_benefit": -6.918170721441626e-05,
+      "better_than_treat_all_and_none_threshold_intervals": [
+        [
+          0.005,
+          0.02
+        ]
+      ],
+      "max_net_benefit": 0.000921375969235128,
       "nri_vs_reference": {
         "reference_model": "O",
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": 0.23244227418328273
+          "0.000000": 0.6392745723199287
         }
       },
       "calibration": {
-        "calibration_intercept": -2.9664384826995045,
-        "calibration_slope": 0.6529976370153365,
-        "brier_score": 0.0014093755516844816,
+        "calibration_intercept": -0.08890110164184875,
+        "calibration_slope": 1.0373653613485632,
+        "brier_score": 0.003309036955140866,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/first_fall_post/output_1y/calibration_curve_O+S.csv"
     },
     "O+D": {
       "risk_column": "risks_1y_os",
-      "better_than_treat_all_and_none_threshold_intervals": [],
-      "max_net_benefit": 0.0,
+      "better_than_treat_all_and_none_threshold_intervals": [
+        [
+          0.005,
+          0.005
+        ]
+      ],
+      "max_net_benefit": 4.54722507218367e-05,
       "nri_vs_reference": {
         "reference_model": "O",
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": -0.010705230538078592
+          "0.000000": 0.03432582536254247
         }
       },
       "calibration": {
-        "calibration_intercept": -2.5609798617877932,
-        "calibration_slope": 0.7422386085670853,
-        "brier_score": 0.001378524257506736,
+        "calibration_intercept": -1.8272224533209243,
+        "calibration_slope": 0.7129845741297025,
+        "brier_score": 0.0033053809497038374,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/first_fall_post/output_1y/calibration_curve_O+D.csv"
     },
     "O+S+D": {
       "risk_column": "risks_1y_oqs",
-      "better_than_treat_all_and_none_threshold_intervals": [],
-      "max_net_benefit": -3.7735476662408875e-05,
+      "better_than_treat_all_and_none_threshold_intervals": [
+        [
+          0.005,
+          0.02
+        ]
+      ],
+      "max_net_benefit": 0.0008751100459875405,
       "nri_vs_reference": {
         "reference_model": "O",
         "method": "reclassification.calculate_nri",
         "weighting": "unweighted",
         "cutoff_nri": {
-          "0.000000": 0.18496259429680406
+          "0.000000": 0.6073228427440092
         }
       },
       "calibration": {
-        "calibration_intercept": -2.671938746510255,
-        "calibration_slope": 0.6966246528712386,
-        "brier_score": 0.0013911839212837826,
+        "calibration_intercept": 0.3237912322862331,
+        "calibration_slope": 1.0961885489578784,
+        "brier_score": 0.0032981116672796498,
         "fit_status": "full_intercept_and_slope"
       },
       "calibration_curve_file": "data/folds/outputs/first_fall_post/output_1y/calibration_curve_O+S+D.csv"
