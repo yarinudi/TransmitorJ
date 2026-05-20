@@ -18,16 +18,53 @@ shorter than 1 hour, at which point it loads the full-resolution slice.
 ```
 whs_dashboard/
 ├── app.py                       # Streamlit entry point — four tabs
+├── app_dash.py                  # Dash entry point — same four tabs, callback graph
 ├── whs_preprocessor.py          # frozen copy — DO NOT MODIFY
 ├── dashboard/
+│   ├── _streamlit_compat.py     # @cache_data / @cache_resource shim
 │   ├── data_loader.py           # discovery + raw loading (cached)
-│   ├── pipeline_runner.py       # WHSPreprocessor + extractors (cached)
-│   ├── plots.py                 # pure Plotly figure builders
-│   └── components.py            # sidebar, KPIs, cohort table, config editor
+│   ├── pipeline_runner.py       # WHSPreprocessor + extractors, exposes
+│   │                            #   run_pipeline_core (framework-agnostic)
+│   ├── plots.py                 # pure Plotly figure builders (shared)
+│   └── components.py            # Streamlit-only UI blocks
 ├── docs/dashboard.md            # this file
-├── tests/test_plots.py          # smoke tests for every plot
+├── tests/
+│   ├── test_plots.py            # smoke tests for every plot
+│   └── test_dash_app.py         # layout + callback invocation tests
 ├── requirements.txt
 └── README.md
+```
+
+## Streamlit vs Dash — what differs and what doesn't
+
+| Layer | Streamlit (`app.py`) | Dash (`app_dash.py`) |
+| ----- | -------------------- | -------------------- |
+| **Plots** (`dashboard/plots.py`) | unchanged | unchanged |
+| **Pipeline** (`pipeline_runner.run_pipeline_core`) | wrapped by `@cache_data` (Streamlit's cache) | wrapped by `@functools.lru_cache(maxsize=16)` keyed on `(subject_id, start_dt_iso, sorted config tuple)` |
+| **Data load** (`data_loader.load_patient`) | wrapped by `@cache_data((path, mtime))` | wrapped by `@functools.lru_cache(maxsize=8)` |
+| **Reactivity** | re-runs the whole script on every interaction | static `app.layout` + 9 `@app.callback` functions wiring the dependency graph explicitly |
+| **State across pages** | `st.session_state` (e.g. `last_bout_idx`) | `dcc.Store` (`store-config`, `store-last-bout-idx`) |
+| **Lasso bout selection** | `st.plotly_chart(..., on_select="rerun")` → `event["selection"]["points"]` | `dcc.Graph(..., id="micro-scatter")` → `Input("micro-scatter", "selectedData")` |
+| **Cohort table** | `st.dataframe` | `dash_table.DataTable` (sortable, `row_selectable="single"`, click → sets dropdown) |
+| **Streamlit decorators** | `streamlit.cache_data` / `cache_resource` | shim no-ops them so the modules import in a Streamlit-free env |
+
+## Dash callback graph
+
+```
+subject-dropdown.value  ─┐
+start-date.date          ├─►  render_raw     →  raw-graph.figure + caption
+start-time.value         ├─►  render_macro   →  macro-content.children
+raw-time-range.value     ├─►  render_micro   →  micro-content.children
+raw-toggles.value        │
+store-config.data        ┘
+
+cfg-inputs.value (× 16) ──►  aggregate_config  →  store-config.data
+cfg-reset.n_clicks      ──►  reset_config      →  cfg-inputs.value (× 16)
+subject-dropdown.value  ──►  on_subject_change →  subject-info, raw slider, start-date, start-time
+store-config.data       ──►  update_cohort    →  cohort-table.data + cohort-wear-bars
+cohort-table.selected_rows ─►  cohort_row_clicked → subject-dropdown.value
+micro-scatter.selectedData ─►  on_bout_selected   → store-last-bout-idx.data
+store-last-bout-idx.data   ─►  (consumed by render_micro)
 ```
 
 ## Four views
@@ -52,11 +89,16 @@ whs_dashboard/
 
 ## Cache layers
 
-| Cache | Decorator | Key | Why |
-| ----- | --------- | --- | --- |
-| Raw load (`load_patient`) | `@st.cache_data` | `(path_str, mtime)` | Reload only when the file changes on disk. |
-| Synthetic subject (`get_synthetic_patient`) | `@st.cache_resource` | none | Built once per Streamlit session; ~216 MB float32 per subject. |
-| Pipeline (`run_pipeline`) | `@st.cache_data` | `(subject_id, start_datetime, config_dict)` | The raw array is passed with a leading underscore (`_data`) so Streamlit's hasher skips it — keeping the cache key small and fast. |
+| Cache | Streamlit decorator | Dash equivalent | Key |
+| ----- | ------------------- | --------------- | --- |
+| Raw load | `@cache_data` (shim → `st.cache_data`) | `@functools.lru_cache(maxsize=8)` in `app_dash._load_data_cached` | `(path_str, mtime)` |
+| Synthetic subject | `@cache_resource` (shim → `st.cache_resource`) | reuses the same `_load_data_cached` keyed on a sentinel path | n/a |
+| Pipeline | `@cache_data` on `pipeline_runner.run_pipeline` | `@functools.lru_cache(maxsize=16)` in `app_dash._pipeline_cached` | `(subject_id, start_datetime_iso, sorted_config_tuple)` |
+
+In both apps the raw numpy array is **not** in the cache key — Streamlit
+skips it via the leading-underscore `_data` parameter; Dash never passes
+it at all because the cached pipeline wrapper resolves data from
+`subject_id` internally via `_resolve_subject`.
 
 ## Adding a new patient-file loader
 

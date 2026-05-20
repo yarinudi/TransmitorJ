@@ -13,7 +13,8 @@ from pathlib import Path
 from typing import Callable
 
 import numpy as np
-import streamlit as st
+
+from ._streamlit_compat import cache_data, cache_resource
 
 
 # ---------------------------------------------------------------------------
@@ -189,7 +190,7 @@ def discover_patients(directory: str | Path = "./example_data/") -> list[Patient
 # Cached raw loading
 # ---------------------------------------------------------------------------
 
-@st.cache_data(show_spinner="Loading raw accelerometer data...")
+@cache_data(show_spinner="Loading raw accelerometer data...")
 def load_patient(path_str: str, mtime: float) -> tuple[np.ndarray, datetime, str]:
     """Load a patient file. Cache key is (path_str, mtime) so file edits invalidate."""
     del mtime  # used only for cache invalidation
@@ -234,7 +235,7 @@ def generate_synthetic_subject(
     return data, start, subject_id
 
 
-@st.cache_resource(show_spinner="Generating synthetic subject...")
+@cache_resource(show_spinner="Generating synthetic subject...")
 def get_synthetic_patient() -> tuple[np.ndarray, datetime, str]:
     """Streamlit-cached wrapper so the synthetic stream is built once per session."""
     return generate_synthetic_subject()

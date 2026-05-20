@@ -1,5 +1,11 @@
-streamlit>=1.35.0
+# Shared (both apps)
 plotly>=5.20.0
 numpy>=1.26.0
 pandas>=2.0.0
 pytest>=8.0.0
+
+# Streamlit entry point (app.py) — omit if you only want app_dash.py
+streamlit>=1.35.0
+
+# Dash entry point (app_dash.py) — omit if you only want app.py
+dash>=2.10.0

@@ -12,11 +12,24 @@ python -m venv .venv
 .venv\Scripts\activate          # PowerShell:  .venv\Scripts\Activate.ps1
                                 # bash/zsh:    source .venv/bin/activate
 pip install -r requirements.txt
-streamlit run app.py
 ```
 
-If no patient files are found under `./data/raw/` the dashboard will boot
-with a built-in synthetic 7-day subject so it is demoable out of the box.
+Two interchangeable entry points sit alongside each other — pick the one your
+environment supports:
+
+| Entry point | Command | When to use |
+| ----------- | ------- | ----------- |
+| `app.py`      | `streamlit run app.py`  | You have Streamlit installed (richer widgets, simpler code). |
+| `app_dash.py` | `python app_dash.py`    | You only have Dash installed (closed environments often do). Open <http://localhost:8050>. |
+
+Both apps share the same `whs_preprocessor.py`, `dashboard/data_loader.py`,
+`dashboard/pipeline_runner.py`, and `dashboard/plots.py` — every plot is
+identical and the four tabs cover the same views. The Dash version uses
+`dash-table` for the cohort overview (sortable, click-row-to-select).
+
+If no patient files are found under `./example_data/` the dashboard will
+boot with a built-in synthetic 7-day subject so it is demoable out of the
+box.
 
 ## What you get
 

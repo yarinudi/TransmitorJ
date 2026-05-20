@@ -1,4 +1,10 @@
-"""Thin Streamlit-cached wrapper around WHSPreprocessor + feature extractors."""
+"""Pipeline orchestration shared by the Streamlit and Dash apps.
+
+``run_pipeline_core`` is the framework-agnostic implementation. The cached
+``run_pipeline`` wrapper sits on top of it via Streamlit's ``@cache_data`` —
+when Streamlit is missing the decorator becomes a no-op and the Dash app
+adds its own caching at the call site.
+"""
 from __future__ import annotations
 
 from dataclasses import asdict, fields
@@ -6,7 +12,6 @@ from datetime import datetime
 from typing import Any
 
 import numpy as np
-import streamlit as st
 
 from whs_preprocessor import (
     MacroFeatureExtractor,
@@ -14,6 +19,8 @@ from whs_preprocessor import (
     PreprocessConfig,
     WHSPreprocessor,
 )
+
+from ._streamlit_compat import cache_data
 
 
 def default_config_dict() -> dict[str, Any]:
@@ -33,22 +40,35 @@ def config_field_specs() -> list[tuple[str, type, Any]]:
     return [(f.name, type(getattr(cfg, f.name)), getattr(cfg, f.name)) for f in fields(cfg)]
 
 
-@st.cache_data(show_spinner="Running preprocessor...")
+def run_pipeline_core(
+    subject_id: str,
+    data: np.ndarray,
+    start_datetime: datetime,
+    config_dict: dict,
+) -> dict:
+    """Framework-agnostic pipeline runner.
+
+    Both ``app.py`` (via the Streamlit-cached ``run_pipeline`` below) and
+    ``app_dash.py`` (via its own ``lru_cache`` wrapper) call into this.
+    """
+    cfg = PreprocessConfig(**config_dict)
+    pre = WHSPreprocessor(cfg)
+    result = pre.process(data, start_datetime=start_datetime, subject_id=subject_id)
+    if result["valid"]:
+        result["macro_features"] = MacroFeatureExtractor(cfg).extract_all(result["macro"])
+        result["micro_features"] = MicroFeatureExtractor(cfg).extract_all(result["micro"])
+    return result
+
+
+@cache_data(show_spinner="Running preprocessor...")
 def run_pipeline(
     subject_id: str,
     _data: np.ndarray,
     start_datetime: datetime,
     config_dict: dict,
 ) -> dict:
-    """Run the full pipeline + feature extractors.
-
-    The leading underscore on ``_data`` tells Streamlit's hasher to skip it —
-    the cache key is (subject_id, start_datetime, config_dict).
+    """Streamlit-cached entry point. The underscore on ``_data`` tells Streamlit's
+    hasher to skip the large numpy array — the cache key is
+    ``(subject_id, start_datetime, config_dict)``.
     """
-    cfg = PreprocessConfig(**config_dict)
-    pre = WHSPreprocessor(cfg)
-    result = pre.process(_data, start_datetime=start_datetime, subject_id=subject_id)
-    if result["valid"]:
-        result["macro_features"] = MacroFeatureExtractor(cfg).extract_all(result["macro"])
-        result["micro_features"] = MicroFeatureExtractor(cfg).extract_all(result["micro"])
-    return result
+    return run_pipeline_core(subject_id, _data, start_datetime, config_dict)
