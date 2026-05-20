@@ -69,6 +69,13 @@ class PreprocessConfig:
     gait_freq_high_hz: float = 3.0
 
 
+# Zero-padding target for the gait-band FFT. A 2-s × 30-Hz window only holds
+# 60 samples -> a 0.5 Hz native bin grid which would snap every dominant
+# frequency onto {1.0, 1.5, 2.0, 2.5, 3.0} Hz. Padding to 256 buys
+# 30/256 ≈ 0.117 Hz resolution, enough to distinguish typical step cadences.
+GAIT_FFT_LENGTH = 256
+
+
 # ---------------------------------------------------------------------------
 # Preprocessor
 # ---------------------------------------------------------------------------
@@ -331,12 +338,14 @@ class WHSPreprocessor:
         """Vectorised FFT-based gait filter.
 
         Step 1: std(ENMO) > 0.05 g   -> drop sedentary / quiet windows.
-        Step 2: dominant FFT bin in [1, 3] Hz on the surviving windows,
-                AND that in-band peak must also be the global spectral
-                peak so high-frequency artefacts (handwashing tremor,
-                vehicle vibration ~ 5 - 10 Hz) cannot sneak through.
+        Step 2: zero-padded FFT to GAIT_FFT_LENGTH (~0.117 Hz bins at fs=30)
+                so step cadences off the 0.5 Hz native grid are still
+                resolved. Then require: in-band peak >= out-of-band peak
+                (both after zeroing DC). This rejects windows where a
+                strong out-of-band tone (handwashing tremor, vehicle
+                vibration ~5-10 Hz) coexists with weaker in-band content.
         """
-        n_windows, L = micro_enmo.shape
+        n_windows = micro_enmo.shape[0]
         gait_mask = np.zeros(n_windows, dtype=bool)
         if n_windows == 0:
             return gait_mask
@@ -348,26 +357,30 @@ class WHSPreprocessor:
             return gait_mask
 
         active_idx = np.flatnonzero(active)
-        active_enmo = micro_enmo[active_idx]                 # (A, L)
+        active_enmo = micro_enmo[active_idx]                                 # (A, L)
 
-        # Batched real FFT -- one allocation, one call.
-        spectra = np.abs(np.fft.rfft(active_enmo, axis=1))   # (A, L//2 + 1)
-        freqs = np.fft.rfftfreq(L, d=1.0 / self.cfg.fs)      # (L//2 + 1,)
+        # ENMO is half-wave rectified, so DC carries the mean amplitude rather
+        # than any oscillatory information. Subtract the per-window mean before
+        # the rFFT — just zeroing the f=0 bin after the fact is not enough once
+        # we zero-pad, because the DC sinc leaks into adjacent (out-of-band)
+        # bins (~0.117 Hz) and can dominate the gate.
+        active_enmo = active_enmo - active_enmo.mean(axis=1, keepdims=True)
 
-        # ENMO is half-wave rectified, so DC carries the mean amplitude
-        # rather than any oscillatory information. Zero it out so the
-        # argmax reflects the dominant AC component.
+        # Batched zero-padded rFFT -- one allocation, one call.
+        spectra = np.abs(np.fft.rfft(active_enmo, n=GAIT_FFT_LENGTH, axis=1))  # (A, K)
+        freqs = np.fft.rfftfreq(GAIT_FFT_LENGTH, d=1.0 / self.cfg.fs)          # (K,)
+
+        # Belt-and-braces: f=0 bin is already ~0 after demean, set it exactly so
+        # downstream argmax / max comparisons are robust to float-precision noise.
         spectra[:, 0] = 0.0
 
-        # The dominant AC bin must fall inside the gait band.
-        # This single rule also rejects vehicular vibration (~5-10 Hz)
-        # and other high-frequency artefacts.
-        peak_bin = spectra.argmax(axis=1)
-        peak_freq = freqs[peak_bin]
-        passes = (
-            (peak_freq >= self.cfg.gait_freq_low_hz)
-            & (peak_freq <= self.cfg.gait_freq_high_hz)
+        in_band = (
+            (freqs >= self.cfg.gait_freq_low_hz)
+            & (freqs <= self.cfg.gait_freq_high_hz)
         )
+        in_band_peak = np.where(in_band[None, :], spectra, -np.inf).max(axis=1)
+        out_band_peak = np.where(~in_band[None, :], spectra, -np.inf).max(axis=1)
+        passes = in_band_peak >= out_band_peak
 
         gait_mask[active_idx[passes]] = True
         return gait_mask
@@ -582,12 +595,15 @@ class MicroFeatureExtractor:
 
     # ---- spectral --------------------------------------------------- #
     def dominant_frequency(self, micro_enmo: np.ndarray) -> np.ndarray:
-        """Per-window dominant gait frequency (Hz), batched FFT."""
+        """Per-window dominant gait frequency (Hz), batched zero-padded FFT.
+
+        Padded to GAIT_FFT_LENGTH so the ~0.117 Hz bin grid resolves cadences
+        that fall between the native 0.5 Hz bins of a 60-sample window.
+        """
         if micro_enmo.shape[0] == 0:
             return np.empty(0, dtype=np.float64)
-        L = micro_enmo.shape[1]
-        spectra = np.abs(np.fft.rfft(micro_enmo, axis=1))
-        freqs = np.fft.rfftfreq(L, d=1.0 / self.cfg.fs)
+        spectra = np.abs(np.fft.rfft(micro_enmo, n=GAIT_FFT_LENGTH, axis=1))
+        freqs = np.fft.rfftfreq(GAIT_FFT_LENGTH, d=1.0 / self.cfg.fs)
         band = (freqs >= self.cfg.gait_freq_low_hz) & (
             freqs <= self.cfg.gait_freq_high_hz
         )
